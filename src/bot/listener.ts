@@ -1,5 +1,11 @@
-import { Bot, Context } from "grammy";
-import { Message } from "grammy/types";
+import { Bot, Context, InputFile, InputMediaBuilder } from "grammy";
+import {
+  Message,
+  InputMediaAudio,
+  InputMediaDocument,
+  InputMediaPhoto,
+  InputMediaVideo,
+} from "grammy/types";
 import { MediaType, MediaGroupMap } from "../types/grammyMedia.type.ts";
 
 //TODO: MAIN: Make listener for massage and change these with gigachat
@@ -27,25 +33,17 @@ export default function (bot: Bot) {
 
     //ctx.deleteMessage();
 
-    //console.log("msg photo:");
-    //console.log(ctx.msg);
     console.log("Recive photo");
-    //console.log("From: " + ctx.from!.id);
-
-    const file = await ctx.getFile();
+    ctx.reply("Caption: " + text);
 
     if (ctx.msg.media_group_id) {
+      //TODO: Separate by type of files
       //TODO: Export delay to a config
-      /*processMediaGroup(ctx.msg, 1000, (files) => {
-        ctx.replyWithMediaGroup([
-          files.map(({id, type}) => {
-            return {
-              media: id,
-              type
-            };
-          }),
-        ]);
-      });*/
+      processMediaGroup(ctx.msg, 1000, (files) => {
+        prepareMediaGroup(files, bot).then((media) => {
+          ctx.replyWithMediaGroup(media);
+        });
+      });
     } else {
       ctx.replyWithPhoto(ctx.msg.photo[0].file_id, {
         caption: text,
@@ -96,67 +94,96 @@ export default function (bot: Bot) {
   });
 }
 
-/** Function for collect all files from mediaGroup message.
- * NOTICE: Call only in case msg.media_group_id is availivle! */
-//TODO: Rewrite - need download files. + Take caption
-//TODO: Create MediaGroupMessage
-/* Was take id in array and return it.
- *  Would take id -> make MediaMessage (may be stream) -> return prepared files */
+/** Work with result from the fn processMediaGroup. Create InputMedia from fileIDs.
+ * Return an array of InputMedia. */
+async function prepareMediaGroup(
+  files: MediaGroupMap["files"],
+  bot: Bot
+): Promise<
+  Array<
+    InputMediaAudio | InputMediaDocument | InputMediaPhoto | InputMediaVideo
+  >
+> {
+  return Promise.all(
+    files.map(async ({ id, type }) => {
+      const file = await bot.api.getFile(id);
+      console.debug("File"); console.debug(file);
+      const path = file.file_path;
+      const url = `https://api.telegram.org/file/bot${process.env.BOT_API_TOKEN}/${path}`;
+      console.debug("URL " + url);
+      const fileTg = await new InputFile(new URL(url));
+      const media = await InputMediaBuilder[type](fileTg);
+      return media;
+    })
+  );
+}
 
-function processMediaGroup(
+/** Function for collect all files from mediaGroup message. Return an array objects:
+ * {id, type}.
+ * NOTICE: Call only in case msg.media_group_id is availivle! */
+async function processMediaGroup(
   msg: Message,
   delay: number,
   cb: (files: MediaGroupMap["files"]) => void
 ) {
-  let mediaGroup: MediaGroupMap;
-
-  const typeOfFile: MediaType | undefined = (function () {
-    for (let key in Object.keys(msg)) {
-      if (["photo", "video", "document", "audio"].includes(key))
-        return key as MediaType;
-    }
-  })();
-
-  if (!typeOfFile) {
-    console.error("ERR msg object:");
-    console.error(msg);
-    throw new Error("ERR: Undefined type of file.");
-  }
-
   const cbForTimeout = () => {
     cb(mediaGroup.files);
     // Clear the store
     mediaGroupMap.delete(msg.media_group_id!);
   };
 
-  // Check timeout and if exist delete it.
-  if (mediaGroupMap.has(msg.media_group_id!)) {
-    mediaGroup = mediaGroupMap.get(msg.media_group_id!)!;
-    clearInterval(mediaGroup.timeout);
+  let mediaGroup: MediaGroupMap;
 
-    // Set new timeout
-    mediaGroup.timeout = setTimeout(cbForTimeout, delay);
-    mediaGroup.files.push({
-      id:
-        typeOfFile === "photo"
-          ? msg.photo![0].file_id
-          : msg[typeOfFile]!.file_id,
-      type: typeOfFile,
-    });
-  } else {
-    // Save data and execute cb if within timeout nothing happend.
-    const timeout = setTimeout(cbForTimeout, delay);
-    mediaGroupMap.set(msg.media_group_id!, {
-      files: [
-        {
-          id:
-            typeOfFile === "photo"
-              ? msg.photo![0].file_id
-              : msg[typeOfFile]!.file_id,
-          type: typeOfFile,
-        },
-      ],
-      timeout,
-    });
+  try {
+    if (!msg.media_group_id) {
+      throw new Error(
+        "The fn processMediaGroup was executed without a msg.media_group_id"
+      );
+    }
+
+    const fileType = getFileType(msg);
+
+    // Check timeout and if exist delete it.
+    if (mediaGroupMap.has(msg.media_group_id)) {
+      mediaGroup = mediaGroupMap.get(msg.media_group_id)!;
+      clearInterval(mediaGroup.timeout);
+
+      // Set new timeout
+      mediaGroup.timeout = setTimeout(cbForTimeout, delay);
+      mediaGroup.files.push({
+        id:
+          fileType === "photo" ? msg.photo![0].file_id : msg[fileType]!.file_id,
+        type: fileType,
+      });
+    } else {
+      // Save data and execute cb if within timeout nothing happend.
+      const timeout = setTimeout(cbForTimeout, delay);
+      mediaGroupMap.set(msg.media_group_id, {
+        files: [
+          {
+            id:
+              fileType === "photo"
+                ? msg.photo![0].file_id
+                : msg[fileType]!.file_id,
+            type: fileType,
+          },
+        ],
+        timeout,
+      });
+    }
+  } catch (e) {
+    console.error("ERR in fn processMediaGroup");
+    console.error("ERR: throw msg object:");
+    console.error(msg);
+    throw e;
   }
+}
+
+function getFileType(msg: Message): MediaType {
+  const mediaTypes = ["photo", "video", "document", "audio"];
+  for (const key of Object.keys(msg)) {
+    if (mediaTypes.includes(key)) return key as MediaType;
+  }
+
+  throw new Error("ERR fn getFileType: not found fileType");
 }
