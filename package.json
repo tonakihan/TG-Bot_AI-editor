@@ -1,5 +1,5 @@
 {
-  "name": "tg-bot_helloworld",
+  "name": "tg-bot_AI-editor",
   "version": "1.0.0",
   "description": "First TG bot. Begining education.",
   "author": "tonakihan",
@@ -16,6 +16,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "gigachat": "^0.0.18",
     "grammy": "^1.41.1"
   }
 }

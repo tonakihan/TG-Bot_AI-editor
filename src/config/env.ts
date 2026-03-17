@@ -8,4 +8,4 @@ export const __dirname = path.dirname(__filename);
 
 loadEnvFile(path.join(__dirname, "..", "..", ".env"));
 
-process.env.API_TOKEN ??= "";
+process.env.BOT_API_TOKEN ??= "";

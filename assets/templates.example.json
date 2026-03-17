@@ -1,0 +1,16 @@
+{
+  // Describe:
+  //"Kind of message": {
+  //  "source": "Input text", // Text written on Markdown2
+  //  "target": "Text you wish to get"
+  //}
+
+  "Info messages": {
+    "source": "",
+    "target": ""
+  },
+  "Schedule": {
+    "source": "",
+    "target": ""
+  }
+}
