@@ -152,7 +152,7 @@ async function processMediaGroup(
       mediaGroup.timeout = setTimeout(cbForTimeout, delay);
       mediaGroup.files.push({
         id:
-          fileType === "photo" ? msg.photo![0].file_id : msg[fileType]!.file_id,
+          fileType === "photo" ? msg.photo!.at(-1)!.file_id : msg[fileType]!.file_id,
         type: fileType,
       });
     } else {
@@ -163,7 +163,7 @@ async function processMediaGroup(
           {
             id:
               fileType === "photo"
-                ? msg.photo![0].file_id
+                ? msg.photo!.at(-1)!.file_id
                 : msg[fileType]!.file_id,
             type: fileType,
           },
