@@ -31,8 +31,10 @@ export default function (bot: Bot) {
     if (ctx.msg.media_group_id) {
       //TODO: Separate by type of files
       //TODO: Export delay to a config
-      processMediaGroup(ctx.msg, 1000, (files) => {
-        prepareMediaGroup(files, bot).then((media) => {
+      processMediaGroup(ctx.msg, 1000, (files, caption) => {
+        caption = caption + " UUUUX TI";
+
+        prepareMediaGroup(files, bot, caption).then((media) => {
           ctx.replyWithMediaGroup(media);
         });
       });
