@@ -4,7 +4,8 @@ export type MediaGroupMap = {
   files: [{
     id: string,
     type: MediaType
-  }];
-  timeout: NodeJS.Timeout;
+  }],
+  timeout: NodeJS.Timeout,
+  caption?: string;
 };
 

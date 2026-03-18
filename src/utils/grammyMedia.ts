@@ -6,11 +6,12 @@ import {
   InputMediaPhoto,
   InputMediaVideo,
 } from "grammy/types";
-import { MediaType, MediaGroupMap } from "../types/grammyMedia.type.ts";
+import type { MediaType, MediaGroupMap } from "../types/grammyMedia.d.ts";
 
 /** Key is msg.media_group_id */
 const mediaGroupMap = new Map<string, MediaGroupMap>();
 
+//TODO: Add save caption
 
 /** Work with result from the fn processMediaGroup. Create InputMedia from fileIDs.
  * Return an array of InputMedia. */
@@ -33,6 +34,7 @@ async function prepareMediaGroup(
     })
   );
 }
+
 
 /** Function for collect all files from mediaGroup message. Return an array objects:
  * {id, type}.
