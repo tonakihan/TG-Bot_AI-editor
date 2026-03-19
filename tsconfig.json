@@ -27,6 +27,7 @@
     // "noUnusedParameters": true,
     // "noFallthroughCasesInSwitch": true,
     // "noPropertyAccessFromIndexSignature": true,
+    "removeComments": true,
 
     "strict": true,
     //"verbatimModuleSyntax": true,
