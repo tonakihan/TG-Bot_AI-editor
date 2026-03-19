@@ -1,7 +1,7 @@
 import { Bot } from "grammy";
 import { processMediaGroup, prepareMediaGroup } from "../utils/grammyMedia.ts";
-
-//TODO: MAIN: Make listener for massage and change these with gigachat
+import { AIChat } from "../gigaChat/index.ts";
+import range from "lodash-es/range.js";
 
 //TODO: made DB with groups and these owners
 // + listener for remove/change
@@ -10,38 +10,39 @@ import { processMediaGroup, prepareMediaGroup } from "../utils/grammyMedia.ts";
 
 //TODO: Automatic parser from etities to markdown/HTML
 
-//NOTICE: Remove message -> EDIT -> POST
+//TODO: Settings for field 'caption'
 
+//TODO: Checking length
 
 export default function (bot: Bot) {
+  //TODO: Add listeners for other types
   const botGroups = bot.chatType(["channel", "group", "supergroup"]);
 
-  //TODO: caption is undefined
   botGroups.on(":photo", async (ctx) => {
-    // If empty message
-    if (!ctx.msg.caption && !ctx.msg.media_group_id) return;
-
-    const text = ctx.msg.caption + " &caption";
-
-    //ctx.deleteMessage();
-
     console.log("Recive photo");
-    ctx.reply("Caption: " + text);
 
+    // is MediaGroup
     if (ctx.msg.media_group_id) {
       //TODO: Separate by type of files
       //TODO: Export delay to a config
-      processMediaGroup(ctx.msg, 1000, (files, caption) => {
-        caption = caption + " UUUUX TI";
+      processMediaGroup(ctx.msg, 1000, async (files, caption) => {
+        if (!caption) return;
 
+        caption = await AIChat(caption);
         prepareMediaGroup(files, bot, caption).then((media) => {
           ctx.replyWithMediaGroup(media);
         });
+
+        ctx.deleteMessages(
+          range(ctx.msg.message_id - files.length + 1, ctx.msg.message_id + 1)
+        );
       });
     } else {
-      ctx.replyWithPhoto(ctx.msg.photo[0].file_id, {
-        caption: text,
-      });
+      let caption = ctx.msg.caption;
+      if (!caption) return;
+      caption = await AIChat(caption);
+      ctx.replyWithPhoto(ctx.msg.photo[0].file_id, { caption });
+      ctx.deleteMessage();
     }
   });
 
@@ -72,8 +73,6 @@ export default function (bot: Bot) {
     const text = ctx.msg.text;
 
     ctx.deleteMessage();
-    //TODO: Settings for field 'caption'
-    //TODO: Checking length
     ctx.reply(text + `\n\nAuthor @${ctx.from.username}`);
   });
 
@@ -84,8 +83,5 @@ export default function (bot: Bot) {
 
   bot.on("message", async (ctx) => {
     ctx.reply("Exception filter 'message'. Well but I am not very smart yet.");
-    //console.log(ctx.msg);
   });
 }
-
-
