@@ -1,4 +1,5 @@
-import { Bot, InlineKeyboard, HttpError, GrammyError } from "grammy";
+import { InlineKeyboard, HttpError, GrammyError } from "grammy";
+import type { Bot } from "../types/Bot.d.ts";
 
 export default function (bot: Bot) {
   bot.catch((err) => {

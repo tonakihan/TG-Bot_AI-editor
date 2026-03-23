@@ -1,4 +1,4 @@
-import { Bot } from "grammy";
+import type { Bot } from "../types/Bot.d.ts";
 import { processMediaGroup, prepareMediaGroup } from "../utils/grammyMedia.ts";
 import { AIChat } from "../gigaChat/index.ts";
 import range from "lodash-es/range.js";
@@ -12,7 +12,7 @@ import range from "lodash-es/range.js";
 
 //TODO: Settings for field 'caption'
 
-//TODO: Checking length
+//TODO: Checking length of text (prompt)
 
 export default function (bot: Bot) {
   //TODO: Add listeners for other types
@@ -27,20 +27,22 @@ export default function (bot: Bot) {
       //TODO: Export delay to a config
       processMediaGroup(ctx.msg, 1000, async (files, caption) => {
         if (!caption) return;
-
+        ctx.api.sendChatAction(ctx.msg.chat.id, "upload_photo");
         caption = await AIChat(caption);
+
         prepareMediaGroup(files, bot, caption).then((media) => {
           ctx.replyWithMediaGroup(media);
         });
-
         ctx.deleteMessages(
           range(ctx.msg.message_id - files.length + 1, ctx.msg.message_id + 1)
         );
       });
     } else {
       let caption = ctx.msg.caption;
+
       if (!caption) return;
       caption = await AIChat(caption);
+
       ctx.replyWithPhoto(ctx.msg.photo[0].file_id, { caption });
       ctx.deleteMessage();
     }

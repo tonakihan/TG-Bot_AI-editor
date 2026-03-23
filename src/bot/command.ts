@@ -1,29 +1,47 @@
-import { Bot } from "grammy";
+import { settings } from "./middleware/menu.ts";
+import type { MyContext } from "../types/MyContext.d.ts";
+import type { Bot } from "../types/Bot.d.ts";
 
-//TODO: made DB with groups and these owners
-// + listener for remove/change
+//TODO: May be turn this into cash?
 
-// SETTINGS:
-//TODO: interface for set of templates
-
-//TODO: Should be setup ONLY in private message (handling groups)
-// OR take many for my token
-
-//TODO: Automatic parser from etities to markdown
-
-//TODO: Export settings in file (chat)
+//TODO: Try using botGroup for separate
 
 export default function (bot: Bot) {
   bot.command("start", async (ctx) => {
-    ctx.reply(
-      "Hi! For get information how to use me " +
-        "to launch /help that have list of availible commands."
-    );
     console.log("/start");
-    console.debug(ctx.from);
+
+    const chatId = ctx.match;
+    const { username: botUsername } = await bot.api.getMe();
+    const isGroup = ctx.msg.chat.type !== "private";
+
+    if (!chatId && !isGroup) {
+      ctx.reply(
+        `Hi\\! To begining, I need the group ID\\. Add me to ` +
+          `the group, then either forward the next message, or ` +
+          `manually send \`\\/start@${botUsername}\` into the group\\.`,
+        {
+          parse_mode: "MarkdownV2",
+        }
+      );
+      ctx.reply(`/start@${botUsername}`);
+    } else if (isGroup) {
+      ctx.reply(
+        `[Click here to setup bot]` +
+          `(tg:\\/\\/resolve?domain=${botUsername}&start=${ctx.msg.chat.id})`,
+        { parse_mode: "MarkdownV2" }
+      );
+      //TODO: Try making 'menu'
+    } else {
+      //const userId = ctx.from!.id;
+      //console.log(await bot.api.getChatMember(chatId, userId));
+      ctx.reply("Settings: ", {
+        //TODO: use session for passing the ID.
+        reply_markup: settings,
+      });
+    }
   });
 
-  //TODO: automate this function for take describe from file
+  //TODO: automate this function for take description from file
   //TODO: add check of desctyprtion bot.command (JSDoc).
   bot.command("help", async (ctx) =>
     ctx.reply(

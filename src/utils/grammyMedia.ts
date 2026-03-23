@@ -7,13 +7,14 @@ import {
   InputMediaVideo,
 } from "grammy/types";
 import type { MediaType, MediaGroupMap } from "../types/grammyMedia.d.ts";
+import type { MyContext } from "../types/MyContext.d.ts";
 
 /** Key is msg.media_group_id */
 const mediaGroupMap = new Map<string, MediaGroupMap>();
 
 async function convertToMedia(
   { id, type }: MediaGroupMap["files"][number],
-  bot: Bot,
+  bot: Bot<MyContext>,
   caption?: MediaGroupMap["caption"]
 ) {
   const file = await bot.api.getFile(id);
@@ -28,7 +29,7 @@ async function convertToMedia(
  * Return an array of InputMedia. */
 async function prepareMediaGroup(
   files: MediaGroupMap["files"],
-  bot: Bot,
+  bot: Bot<MyContext>,
   caption?: string
 ): Promise<
   Array<
