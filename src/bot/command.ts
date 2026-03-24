@@ -30,11 +30,11 @@ export default function (bot: Bot) {
           `(tg:\\/\\/resolve?domain=${botUsername}&start=${ctx.msg.chat.id})`,
         { parse_mode: "MarkdownV2" }
       );
-      //TODO: Try making 'menu'
     } else {
+      //TODO: Load config
       //const userId = ctx.from!.id;
       //console.log(await bot.api.getChatMember(chatId, userId));
-      ctx.reply("Settings: ", {
+      await ctx.reply("Settings: ", {
         //TODO: use session for passing the ID.
         reply_markup: settings,
       });
@@ -42,7 +42,7 @@ export default function (bot: Bot) {
   });
 
   //TODO: automate this function for take description from file
-  //TODO: add check of desctyprtion bot.command (JSDoc).
+  //TODO: add check of description bot.command (JSDoc).
   bot.command("help", async (ctx) =>
     ctx.reply(
       "It is bot-editor (AI by GigaChat). His purpose " +

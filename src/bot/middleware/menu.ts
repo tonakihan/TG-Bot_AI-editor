@@ -12,9 +12,8 @@ export const settings = new Menu<MyContext>("menu-settings-root")
   .text("Export config", (ctx) => {});
 
 export const caption = new Menu<MyContext>("menu-settings-caption")
-  .text("Set text").row()
+  .text("Set text", (ctx) => ctx.conversation.enter("captionSet")).row()
   .text("Disable caption").row()
   .back("<= back");
 
 settings.register(caption);
-

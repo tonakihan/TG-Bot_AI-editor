@@ -1,6 +1,7 @@
-import { SessionData } from './SessionData.d.ts'
-import type { Context, SessionFlavor } from 'grammy'
+import type { SessionData } from "./SessionData.d.ts";
+import type { Context, SessionFlavor } from "grammy";
+import type { ConversationFlavor } from "@grammyjs/conversation";
 
-type MyContext = Context & SessionFlavor<SessionData>
+type MyContext = ConversationFlavor<Context & SessionFlavor<SessionData>>;
 
-export type { MyContext }
+export type { MyContext };

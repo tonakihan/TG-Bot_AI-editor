@@ -1,3 +1,7 @@
+import type { ConfigBot } from "./ConfigBot.d.ts";
+
+// It is used for 
 export interface SessionData {
-  chatId?: number;
+  groupId?: number;
+  config?: ConfigBot;
 }
