@@ -1,12 +1,12 @@
 import { Bot, session } from "grammy";
-import listener from "./listener.ts";
-import command from "./command.ts";
-import error from "./error.ts";
-import middleware from "./middleware/index.ts";
-import type { MyContext } from "../types/MyContext.d.ts";
-import type { SessionData } from "../types/SessionData.d.ts";
-
-//TODO: Refactoring code to example/scaling
+import { conversations } from "@grammyjs/conversations";
+//
+import type { MyContext } from "./types/MyContext.d.ts";
+import type { SessionData } from "./types/SessionData.d.ts";
+//
+import components from "./components/index.ts";
+import composers from "./composers/index.ts";
+import errorHandler from "./error.ts";
 //TODO: Connect DB for store configurations
 
 export default function (token: string) {
@@ -18,11 +18,12 @@ export default function (token: string) {
       initial: (): SessionData => ({}),
     })
   );
+  bot.use(conversations());
 
-  middleware(bot);
-  command(bot);
-  listener(bot);
-  error(bot);
+  bot.use(components);
+  bot.use(composers);
+
+  errorHandler(bot);
 
   return bot;
 }

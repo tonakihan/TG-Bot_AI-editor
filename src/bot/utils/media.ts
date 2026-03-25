@@ -1,12 +1,13 @@
-import { Bot, InputFile, InputMediaBuilder } from "grammy";
-import {
+import { type Bot, InputFile, InputMediaBuilder } from "grammy";
+import type {
   Message,
   InputMediaAudio,
   InputMediaDocument,
   InputMediaPhoto,
   InputMediaVideo,
 } from "grammy/types";
-import type { MediaType, MediaGroupMap } from "../types/grammyMedia.d.ts";
+//
+import type { MediaType, MediaGroupMap } from "../types/Media.d.ts";
 import type { MyContext } from "../types/MyContext.d.ts";
 
 /** Key is msg.media_group_id */
@@ -39,7 +40,9 @@ async function prepareMediaGroup(
   const first = await convertToMedia(files[0], bot, caption);
   files = files.slice(1);
 
-  const media = await Promise.all(files.map((file) => convertToMedia(file, bot)));
+  const media = await Promise.all(
+    files.map((file) => convertToMedia(file, bot))
+  );
   media.unshift(first);
   return media;
 }

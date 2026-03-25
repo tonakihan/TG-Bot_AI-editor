@@ -1,7 +1,8 @@
 import type { Conversation } from "@grammyjs/conversations";
 import type { Context } from "grammy";
-import type { MyContext } from "../../types/MyContext.d.ts";
 import range from "lodash-es/range.js";
+//
+import type { MyContext } from "../types/MyContext.d.ts";
 
 //TODO: Make possible use username in caption
 export async function captionSet(cvst: Conversation, ctx: Context) {
