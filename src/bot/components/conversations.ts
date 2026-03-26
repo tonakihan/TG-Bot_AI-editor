@@ -6,24 +6,26 @@ import type { MyContext } from "../types/MyContext.d.ts";
 
 //TODO: Make possible use username in caption
 export async function captionSet(cvst: Conversation, ctx: Context) {
-  const cloneOrigMenu = cvst.menu("menu-settings-caption").text("Click me");
+  const cloneReturnMenu = cvst.menu("menu-return").text("<= Back to settings");
 
   const menu = cvst.menu().text("Cancel", async (ctx) => {
     await ctx.menu.nav("menu-settings-caption", { immediate: true });
     await cvst.halt();
   });
+
+  await ctx.editMessageText("Edit caption:");
   await ctx.editMessageReplyMarkup({
     reply_markup: menu,
   });
 
   await ctx.reply("What is your text?");
   const input = await cvst.form.text();
-  // Try return menu
-  await ctx.reply("Success!");
-
   await cvst.external(
     (ctx: MyContext) => (ctx.session.config = { caption: input })
   );
 
-  await ctx.editMessageReplyMarkup({ reply_markup: cloneOrigMenu });
+  // Delete the menu
+  await ctx.editMessageReplyMarkup();
+
+  await ctx.reply("Success! Caption changed.", { reply_markup: cloneReturnMenu });
 }
