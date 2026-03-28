@@ -21,7 +21,7 @@ export async function captionSet(cvst: Conversation, ctx: Context) {
   await ctx.reply("What is your text?");
   const input = await cvst.form.text();
   await cvst.external(
-    (ctx: MyContext) => (ctx.session.config = { caption: input })
+    (ctx: MyContext) => (ctx.session.config.caption = input)
   );
 
   // Delete the menu
