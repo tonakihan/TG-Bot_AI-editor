@@ -18,10 +18,14 @@ const settings = new Menu<MyContext>("menu-settings-root")
       config.access = admAccess ? "owner" : "admin";
       ctx.menu.update();
     }).row()
-  .submenu("Caption", "menu-settings-caption", async (ctx) => {
+  //
+  .submenu("Caption", "menu-settings-caption", (ctx) => {
       const crrCap = ctx.session.config.caption;
-      await ctx.editMessageText(`Caption: \n\nCurrent: ${crrCap}`);
+      ctx.editMessageText(
+        `Caption: \n\nCurrent: ${crrCap ? crrCap : "disabled"}`
+      );
     }).row()
+  //
   .text("Templates for AI", (ctx) => {}).row();
   /*.text("Import config", (ctx) => {})
   .text("Export config", (ctx) => {});*/
@@ -29,7 +33,12 @@ const settings = new Menu<MyContext>("menu-settings-root")
 const caption = new Menu<MyContext>("menu-settings-caption")
   .text("Set text", (ctx) => 
     ctx.conversation.enter("captionSet")).row()
-  .text("Disable caption").row()
+  //
+  .text("Disable caption", async (ctx) => {
+      ctx.session.config.caption = "";
+      ctx.editMessageText("Caption: \n\nSuccess caption disabled!");
+    }).row()
+  //
   .back("<= Back", (ctx) => 
     ctx.editMessageText("Settings:"));
 //
