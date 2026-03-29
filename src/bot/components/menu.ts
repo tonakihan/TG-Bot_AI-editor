@@ -7,14 +7,24 @@ import type { MyContext } from "../types/MyContext.d.ts";
 
 // Main
 const settings = new Menu<MyContext>("menu-settings-root")
-  .text("Admin access to settings", (ctx) => {}).row()
+  .text(
+    (ctx) => {
+      const admStatus = ctx.session.config.access === "admin" ? "✅" : "❌";
+      return `Admin access to settings ${admStatus}`;
+    }, 
+    (ctx) => {
+      const config = ctx.session.config;
+      const admAccess = config.access === "admin";
+      config.access = admAccess ? "owner" : "admin";
+      ctx.menu.update();
+    }).row()
   .submenu("Caption", "menu-settings-caption", async (ctx) => {
       const crrCap = ctx.session.config.caption;
-      await ctx.editMessageText(`Caption: \n\nCurrent: ${crrCap}`) // TODO: Print current
+      await ctx.editMessageText(`Caption: \n\nCurrent: ${crrCap}`);
     }).row()
-  .text("Templates for AI", (ctx) => {}).row()
-  .text("Import config", (ctx) => {})
-  .text("Export config", (ctx) => {});
+  .text("Templates for AI", (ctx) => {}).row();
+  /*.text("Import config", (ctx) => {})
+  .text("Export config", (ctx) => {});*/
 
 const caption = new Menu<MyContext>("menu-settings-caption")
   .text("Set text", (ctx) => 
