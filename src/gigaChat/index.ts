@@ -6,6 +6,7 @@ import path from "node:path";
 
 //TODO: Work with fs separate to single file
 //TODO: Append function-log-alarm for trying execute custom prompt
+//TODO: Can I make this feature to the bot middleware?
 
 const httpsAgent = new Agent({
   rejectUnauthorized: false, // WARN: SSL is off!
@@ -34,7 +35,7 @@ const messages: Message[] = [
   },
 ];
 
-//TODO: Can I make this function for the bot middleware?
+//TODO: Checking length of text (prompt)
 export async function AIChat(request: string): Promise<string> {
   messages.push({
     role: "user",

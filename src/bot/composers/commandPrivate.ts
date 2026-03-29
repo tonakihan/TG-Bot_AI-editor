@@ -23,11 +23,9 @@ mComposer.command("start", async (ctx) => {
     );
     ctx.reply(`/start@${botUsername}`);
   } else {
-    //TODO: Load config
     //const userId = ctx.from!.id;
     //console.log(await bot.api.getChatMember(chatId, userId));
     await ctx.reply("Settings: ", {
-      //TODO: use session for passing the ID.
       reply_markup: settings,
     });
   }

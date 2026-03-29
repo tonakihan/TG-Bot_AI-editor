@@ -10,8 +10,6 @@ import { AIChat } from "../../gigaChat/index.ts";
 
 //TODO: Automatic parser from etities to markdown/HTML
 
-//TODO: Checking length of text (prompt)
-
 const composer = new Composer<MyContext>();
 const mComposer = composer.chatType(["channel", "group", "supergroup"]);
 
