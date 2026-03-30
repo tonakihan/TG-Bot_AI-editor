@@ -88,7 +88,7 @@ const mnTemplates = new Menu<MyContext>("menu-settings-templates")
     }).row()
   .text("🔄 Reset to default", (ctx) => {
       const config = ctx.session.config;
-      config.templates = defaultData.config.templates;
+      config.templates = structuredClone(defaultData.config.templates);
       ctx.editMessageText("Templates: \n\nSuccess reset templates");
     }).row()
   .back("🔙 Back", (ctx) => {

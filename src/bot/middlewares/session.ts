@@ -14,6 +14,7 @@ const defaultData: Readonly<SessionData> = {
   config: {
     access: "admin",
     caption: "By $username",
+    // NOTICE: Need use deep clone!
     templates: [{
       source: "Доброе утро всем. Старосты, передайте, " +
         "пожалуйста, студентам, чтобы социальные справки " +
