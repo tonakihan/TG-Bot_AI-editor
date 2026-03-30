@@ -1,6 +1,6 @@
 import { Composer } from "grammy";
 //
-import { settings } from "../components/menu.ts";
+import { mnSettings } from "../components/menu.ts";
 import type { MyContext } from "../types/MyContext.d.ts";
 
 const composer = new Composer<MyContext>();
@@ -23,10 +23,8 @@ mComposer.command("start", async (ctx) => {
     );
     ctx.reply(`/start@${botUsername}`);
   } else {
-    //const userId = ctx.from!.id;
-    //console.log(await bot.api.getChatMember(chatId, userId));
     await ctx.reply("Settings: ", {
-      reply_markup: settings,
+      reply_markup: mnSettings,
     });
   }
 });
