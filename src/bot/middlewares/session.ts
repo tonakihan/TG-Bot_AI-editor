@@ -9,6 +9,30 @@ import type { MyContext } from "../types/MyContext.d.ts";
 
 /** Key is userId, value is groupId */
 const tmpSessionKey = new Map<string, string>();
+/** Used in initSession() */
+const defaultData: Readonly<SessionData> = {
+  config: {
+    access: "admin",
+    caption: "By $username",
+    templates: [{
+      source: "Доброе утро всем. Старосты, передайте, " +
+        "пожалуйста, студентам, чтобы социальные справки " +
+        "несли до 9 числа включительно, так как 10 числа " +
+        "с утра уже подаётся представление.",
+      target: "ℹ️Infoℹ️\n\nСтудентам, которым необходимо " +
+        "предоставить социальные справки. Социальные " +
+        "справки принимаются до 9 числа включительно."
+    },
+    {
+      source: "Уважаемые старосты, добрый день. 😊 Напоминаю, " +
+        "что сегодня в 14.40 в актовом зале состоятся " + 
+        "Разговоры о важном для студентов 1 курса. Эта пара " +
+        "стоит у ваших групп в расписании. Просьба обеспечить " +
+        "явку на это мероприятие в полном составе. 👆🏻",
+      target: "🗓️ Расписание🗓️\n\nСегодня \"Разговоры о важном\" в 14:40 - Актовый зал."
+    }],
+  }
+}
 
 function getSessionKey(ctx: MyContext): string | undefined {
   const isGroup = ctx.msg.chat.type !== "private";
@@ -45,13 +69,7 @@ function getSessionKey(ctx: MyContext): string | undefined {
 }
 
 function initSession(): SessionData {
-  return {
-    config: {
-      access: "admin",
-      caption: "By $username",
-      templates: [],
-    },
-  };
+  return structuredClone(defaultData);
 }
 
 const mSession = session({
@@ -62,3 +80,4 @@ const mSession = session({
 });
 
 export default mSession;
+export { defaultData };

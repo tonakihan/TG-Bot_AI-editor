@@ -3,6 +3,8 @@ import { Menu } from "@grammyjs/menu";
 import type { MyContext } from "../types/MyContext.d.ts";
 import type { Config } from "../types/Config.d.ts";
 import type { ArgsEditTemplate } from "../types/Conversations.d.ts";
+//
+import { defaultData } from "../middlewares/session.ts";
 
 // Main
 const mnSettings = new Menu<MyContext>("menu-settings-root")
@@ -60,7 +62,9 @@ const mnCaption = new Menu<MyContext>("menu-settings-caption")
     }).row()
   //
   .text("🔄 Reset to default", (ctx) => {
-      //TODO: default value (from session)
+      const config = ctx.session.config;
+      config.caption = defaultData.config.caption;
+      ctx.editMessageText("Caption: \n\nSuccess caption reset!");
     }).row()
   //
   .back("🔙 Back", (ctx) => 
@@ -83,9 +87,8 @@ const mnTemplates = new Menu<MyContext>("menu-settings-templates")
       await ctx.conversation.enter("setTemplate");
     }).row()
   .text("🔄 Reset to default", (ctx) => {
-      //TODO: default value (from session)
       const config = ctx.session.config;
-      config.templates = [];
+      config.templates = defaultData.config.templates;
       ctx.editMessageText("Templates: \n\nSuccess reset templates");
     }).row()
   .back("🔙 Back", (ctx) => {
