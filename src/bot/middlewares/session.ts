@@ -4,7 +4,7 @@ import type { Context, Middleware } from "grammy";
 import type { SessionData } from "../types/SessionData.d.ts";
 import type { MyContext } from "../types/MyContext.d.ts";
 
-//TODO: Storage
+//TODO: Storage + split config - to seave and other
 //TODO: Add error handler: Timeout session with reply
 
 /** Key is userId, value is groupId */
@@ -32,7 +32,9 @@ const defaultData: Readonly<SessionData> = {
         "явку на это мероприятие в полном составе. 👆🏻",
       target: "🗓️ Расписание🗓️\n\nСегодня \"Разговоры о важном\" в 14:40 - Актовый зал."
     }],
-  }
+  },
+
+  parsedCaption: "By $username"
 }
 
 function getSessionKey(ctx: MyContext): string | undefined {
