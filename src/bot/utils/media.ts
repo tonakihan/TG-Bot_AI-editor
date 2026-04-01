@@ -16,13 +16,13 @@ const mediaGroupMap = new Map<string, MediaGroupMap>();
 async function convertToMedia(
   { id, type }: MediaGroupMap["files"][number],
   bot: Bot<MyContext>,
-  caption?: MediaGroupMap["caption"]
+  options?: MediaGroupMap["options"]
 ) {
   const file = await bot.api.getFile(id);
   const path = file.file_path;
   const url = `https://api.telegram.org/file/bot${process.env.BOT_API_TOKEN}/${path}`;
   const fileTg = await new InputFile(new URL(url));
-  const media = await InputMediaBuilder[type](fileTg, { caption });
+  const media = await InputMediaBuilder[type](fileTg, options);
   return media;
 }
 
@@ -31,13 +31,13 @@ async function convertToMedia(
 async function prepareMediaGroup(
   files: MediaGroupMap["files"],
   bot: Bot<MyContext>,
-  caption?: string
+  options?: MediaGroupMap["options"]
 ): Promise<
   Array<
     InputMediaAudio | InputMediaDocument | InputMediaPhoto | InputMediaVideo
   >
 > {
-  const first = await convertToMedia(files[0], bot, caption);
+  const first = await convertToMedia(files[0], bot, options);
   files = files.slice(1);
 
   const media = await Promise.all(
@@ -56,11 +56,11 @@ async function processMediaGroup(
   delay: number,
   cb: (
     files: MediaGroupMap["files"],
-    caption?: MediaGroupMap["caption"]
+    options?: MediaGroupMap["options"]
   ) => void
 ) {
   const cbForTimeout = () => {
-    cb(mediaGroup.files, mediaGroup.caption);
+    cb(mediaGroup.files, mediaGroup.options);
     // Clear the store
     mediaGroupMap.delete(msg.media_group_id!);
   };
@@ -91,7 +91,7 @@ async function processMediaGroup(
             : msg[fileType]!.file_id,
         type: fileType,
       });
-      mediaGroup.caption ??= msg.caption;
+      mediaGroup.options ??= { caption: msg.caption };
     } else {
       // Part: New data
       // Save data and execute cb if within timeout nothing happend.
@@ -107,7 +107,7 @@ async function processMediaGroup(
           },
         ],
         timeout,
-        caption: msg.caption,
+        options: { caption: msg.caption },
       });
     }
   } catch (e) {

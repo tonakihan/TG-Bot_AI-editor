@@ -4,7 +4,7 @@ import range from "lodash-es/range.js";
 import type { MyContext } from "../types/MyContext.d.ts";
 //
 import { processMediaGroup, prepareMediaGroup } from "../utils/media.ts";
-import { AIChat } from "../../gigaChat/index.ts";
+import AI from "../../gigaChat/index.ts";
 
 //TODO: Add processor (reader/upload) files for AIchat
 
@@ -23,7 +23,7 @@ mComposer.on(":photo", async (ctx) => {
     processMediaGroup(ctx.msg, 1000, async (files, caption) => {
       if (!caption) return;
       ctx.api.sendChatAction(ctx.msg.chat.id, "upload_photo");
-      caption = await AIChat(caption);
+      caption = await AI.chat(caption, ctx.session.config.templates);
 
       prepareMediaGroup(files, ctx, caption).then((media) => {
         ctx.replyWithMediaGroup(media);
@@ -36,9 +36,12 @@ mComposer.on(":photo", async (ctx) => {
     let caption = ctx.msg.caption;
 
     if (!caption) return;
-    caption = await AIChat(caption);
+    caption = await AI.chat(caption, ctx.session.config.templates);
 
-    ctx.replyWithPhoto(ctx.msg.photo[0].file_id, { caption });
+    ctx.replyWithPhoto(ctx.msg.photo[0].file_id, {
+      caption,
+      parse_mode: "HTML",
+    });
     ctx.deleteMessage();
   }
 });
@@ -49,10 +52,15 @@ mComposer.on("message:left_chat_member:me", async (ctx) => {
 });
 
 mComposer.on("message:text", async (ctx) => {
-  const text = ctx.msg.text;
+  let text = ctx.msg.text;
+  text = await AI.chat(text, ctx.session.config.templates);
 
+  if (ctx.session.config.caption) {
+    text += `\n\n` + ctx.session.parsedCaption;
+  }
+
+  ctx.reply(text, { parse_mode: "HTML" });
   ctx.deleteMessage();
-  ctx.reply(text + `\n\nAuthor @${ctx.from.username}`);
 });
 
 // chennel_post and message
@@ -64,4 +72,4 @@ mComposer.on("message", async (ctx) => {
   ctx.reply("Exception filter 'message'. Well but I am not very smart yet.");
 });
 
-export default composer
+export default composer;

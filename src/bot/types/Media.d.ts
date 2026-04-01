@@ -1,3 +1,12 @@
+import type {
+  InputMediaOptions,
+  InputMediaPhoto,
+  InputMediaVideo,
+  InputMediaAudio,
+  InputMediaDocument,
+  InputMediaAnimation,
+} from "@types/grammyjs";
+
 export type MediaType = "photo" | "video" | "document" | "audio";
 
 export type MediaGroupMap = {
@@ -6,5 +15,11 @@ export type MediaGroupMap = {
     type: MediaType;
   }[];
   timeout: NodeJS.Timeout;
-  caption?: string;
+  options?: InputMediaOptions<
+    | InputMediaPhoto
+    | InputMediaVideo
+    | InputMediaAudio
+    | InputMediaDocument
+    | InputMediaAnimation
+  >;
 };
