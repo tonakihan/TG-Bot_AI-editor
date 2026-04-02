@@ -1,6 +1,5 @@
 .env
 dist
 node_modules
+_*
 
-# http certification
-cert

@@ -1,14 +1,14 @@
 {
   "name": "tg-bot_AI-editor",
   "version": "1.0.0",
-  "description": "AI editor - this bot can edit your text for improveming readability.",
+  "description": "AI editor - this bot can edit your text for improvement readability.",
   "author": "tonakihan",
   "license": "MIT",
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "NODE_EXTRA_CS_CERTS=./cert/russian_trusted_root_ca_pem.crt tsc && node dist/index.js",
+    "start": "tsc && node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
