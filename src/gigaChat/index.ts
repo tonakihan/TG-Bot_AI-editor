@@ -18,7 +18,7 @@ class AI {
 
   constructor() {
     const httpsAgent = new Agent({
-      rejectUnauthorized: false, // WARN: SSL is off!
+      rejectUnauthorized: true, // WARN: SSL is off!
     });
 
     this.client = new GigaChat({
