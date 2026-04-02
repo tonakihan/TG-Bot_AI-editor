@@ -16,7 +16,7 @@ const parserCaption: MiddlewareFn<MyContext> = async (ctx, next) => {
 
     ctx.session.parsedCaption = caption;
   } catch (e) {
-    console.error("Err: " + e);
+    console.error("ERR: bot/middlewares/parserCaption: " + e);
   }
   next();
 };
