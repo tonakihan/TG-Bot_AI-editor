@@ -15,8 +15,8 @@ sudo docker run tg-bot_ai-editor
 ```
 ### Build native
 1. Define your .env
-  1.1. Get a bot token from the BotFather
-  1.2. Get a GigaChat token from the sber studio.
+    1. Get a bot token from the BotFather
+    2. Get a GigaChat token from the sber studio.
 2. Install the TLS certification issued by the [Russian Minestry](https://www.gosuslugi.ru/crt).
 3. Install dependencies using `yarn install -D`
 4. Run `yarn build && yarn start`
