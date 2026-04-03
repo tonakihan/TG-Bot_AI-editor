@@ -29,7 +29,7 @@ mComposer.on(":photo", async (ctx) => {
         ctx.replyWithMediaGroup(media);
       });
       ctx.deleteMessages(
-        range(ctx.msg.message_id - files.length + 1, ctx.msg.message_id + 1)
+        range(ctx.msg.message_id - files.length + 1, ctx.msg.message_id + 1),
       );
     });
   } else {
@@ -68,8 +68,8 @@ mComposer.on("msg:text", async (ctx) => {
   ctx.reply("Exception filter 'msg:text'");
 });
 
-mComposer.on("message", async (ctx) => {
+/*mComposer.on("message", async (ctx) => {
   ctx.reply("Exception filter 'message'. Well but I am not very smart yet.");
-});
+});*/
 
 export default composer;
