@@ -14,11 +14,11 @@ mComposer.command("start", async (ctx) => {
 
   if (!chatId) {
     await ctx.reply(
-      `Hi\\! To begining, I need the group ID\\. Add me to ` +
-        `the group, then forward the next message into the group\\.\n` +
+      `Hi! To begining, I need the group ID. Add me to ` +
+        `the group, then forward the next message into the group.\n` +
         `And give to me admin rights in the group.`,
       {
-        parse_mode: "MarkdownV2",
+        parse_mode: "HTML",
       },
     );
     ctx.reply(`/start@${botUsername}`);
