@@ -11,7 +11,9 @@ used VPN only for Telegram connections.
 ### Docker
 ```sh
 sudo docker build --no-cache -t tg-bot_ai-editor .
-sudo docker run tg-bot_ai-editor
+sudo docker run \
+    -v .env:/usr/local/app/.env \
+    tg-bot_ai-editor
 ```
 ### Build native
 1. Define your .env

@@ -12,10 +12,18 @@ RUN wget https://gu-st.ru/content/lending/linux_russian_trusted_root_ca_pem.zip 
 
 # Build project
 WORKDIR /usr/local/app
-COPY . .
-RUN npm install -D && \
-    npm run build && \
-    rm -R node_modules src package-lock.json tsconfig.json && \
-    npm install
+COPY --chown=node . .
+
+#RUN addgroup -g 1000 node && \ 
+#    adduser -u 1000 -G node -s /bin/sh -D node && \
+#    chown node:node .
+RUN chown node:node .
+USER node
+
+RUN yarn install -D --frozen-lockfile && \
+    yarn run build && \
+    rm -R node_modules src yarn.lock tsconfig.json && \
+    yarn install --frozen-lockfile && \
+    yarn cache clean
 
 CMD ["npm", "start"]
